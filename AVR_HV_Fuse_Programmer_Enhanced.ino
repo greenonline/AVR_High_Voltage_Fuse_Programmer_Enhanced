@@ -18,7 +18,7 @@
 // Fuse Calc:
 //   http://www.engbedded.com/fusecalc/
 
-//#define GADGETREBOOT2TRANSISTOR
+#define GADGETREBOOT2TRANSISTOR
 
 //#define  SCI     12    // Target Clock Input
 //#define  SDO     11    // Target Data Output
@@ -203,7 +203,6 @@ void loop() {
   #ifndef GADGETREBOOT2TRANSISTOR
     digitalWrite(RST, LOW); // 12V On - Bacon circuit (one transistor)
   #endif /* GADGETREBOOT2TRANSISTOR */
-
   delayMicroseconds(10);
   pinMode(SDO, INPUT);     // Set SDO to input
   delayMicroseconds(300);  // Ensure VCC has reached at least 4.5v before issuing instructions
