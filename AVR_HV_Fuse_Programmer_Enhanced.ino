@@ -18,6 +18,7 @@
 // Fuse Calc:
 //   http://www.engbedded.com/fusecalc/
 
+// Comment this line out if you only wish to use the single transistor implementation of the RESET circuit
 #define GADGETREBOOT2TRANSISTOR
 
 //#define  SCI     12    // Target Clock Input
