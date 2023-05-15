@@ -300,7 +300,7 @@ int getCommand() {
     }
     reply = Serial.read();
   }
-  while (!(reply == 48 || reply == 49 || reply == 50));
+  while (!(reply == '0' || reply == '1' || reply == '2'));
 
   return reply;
 }
