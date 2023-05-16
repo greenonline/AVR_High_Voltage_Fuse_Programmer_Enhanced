@@ -19,7 +19,9 @@
 //   http://www.engbedded.com/fusecalc/
 
 // Comment this line out if you only wish to use the single transistor implementation of the RESET circuit
-#define GADGETREBOOT2TRANSISTOR
+#define GADGETREBOOT2TRANSISTOR_12V
+// Comment this line out if you only wish to use the single transistor implementation of the VCC circuit - leave in place for direct Vcc power from digital pin
+#define GADGETREBOOT2TRANSISTOR_VCC
 
 //#define  SCI     12    // Target Clock Input
 //#define  SDO     11    // Target Data Output
@@ -95,12 +97,16 @@ void setup() {
   Serial.begin(9600);
 
   // configure programming pins
-  #ifdef GADGETREBOOT2TRANSISTOR
+  #ifdef GADGETREBOOT2TRANSISTOR_12V
     digitalWrite(RST, LOW);   // 12V Off - GadgetReboot circuit (two transistors)
   #else
     digitalWrite(RST, HIGH);  // 12V Off  - Bacon circuit (one transistor)
-  #endif /* GADGETREBOOT2TRANSISTOR*/
-  digitalWrite(VCC, LOW);
+  #endif /* GADGETREBOOT2TRANSISTOR_12V */
+  #ifdef GADGETREBOOT2TRANSISTOR_VCC
+    digitalWrite(VCC, LOW);   // Vcc Off  - GadgetReboot circuit (two transistors), or direct
+  #else
+    digitalWrite(VCC, HIGH);  // Vcc Off  - GadgetReboot circuit (one transistor)
+  #endif /* GADGETREBOOT2TRANSISTOR_VCC */
   digitalWrite(SDI, LOW);
   digitalWrite(SII, LOW);
   digitalWrite(SDO, LOW);
@@ -189,18 +195,22 @@ void loop() {
   digitalWrite(SDI, LOW);
   digitalWrite(SII, LOW);
   digitalWrite(SDO, LOW);
-  #ifdef GADGETREBOOT2TRANSISTOR
-    digitalWrite(RST, LOW);  // 12V Off - GadgetReboot circuit (two transistors)
+  #ifdef GADGETREBOOT2TRANSISTOR_12V
+    digitalWrite(RST, LOW);   // 12V Off - GadgetReboot circuit (two transistors)
   #else
-    digitalWrite(RST, HIGH);  // 12V Off  - Bacon circuit (one transistor)
-  #endif /* GADGETREBOOT2TRANSISTOR */
-  digitalWrite(VCC, HIGH); // Vcc On
+    digitalWrite(RST, HIGH);  // 12V Off - Bacon circuit (one transistor)
+  #endif /* GADGETREBOOT2TRANSISTOR_12V */
+  #ifdef GADGETREBOOT2TRANSISTOR_VCC
+    digitalWrite(VCC, HIGH);  // Vcc On  - GadgetReboot circuit (two transistors), or direct
+  #else
+    digitalWrite(VCC, LOW);   // Vcc On  - GadgetReboot circuit (one transistor)
+  #endif /* GADGETREBOOT2TRANSISTOR_VCC */	
   delayMicroseconds(100);  // Ensure VCC has reached at least 1.1v before applying 12v to reset
-  #ifdef GADGETREBOOT2TRANSISTOR
-    digitalWrite(RST, HIGH); // 12V On - GadgetReboot circuit (two transistors)
+  #ifdef GADGETREBOOT2TRANSISTOR_12V
+    digitalWrite(RST, HIGH);  // 12V On  - GadgetReboot circuit (two transistors)
   #else
-    digitalWrite(RST, LOW); // 12V On - Bacon circuit (one transistor)
-  #endif /* GADGETREBOOT2TRANSISTOR */
+    digitalWrite(RST, LOW);   // 12V On  - Bacon circuit (one transistor)
+  #endif /* GADGETREBOOT2TRANSISTOR_12V */
   delayMicroseconds(10);
   pinMode(SDO, INPUT);     // Set SDO to input
   delayMicroseconds(300);  // Ensure VCC has reached at least 4.5v before issuing instructions
@@ -223,15 +233,18 @@ void loop() {
   }
 
   digitalWrite(SCI, LOW);
-  #ifdef GADGETREBOOT2TRANSISTOR
+  #ifdef GADGETREBOOT2TRANSISTOR_12V
     digitalWrite(RST, LOW);  // 12V Off - GadgetReboot circuit (two transistors)
   #else
     digitalWrite(RST, HIGH);  // 12V Off  - Bacon circuit (one transistor)
-  #endif /* GADGETREBOOT2TRANSISTOR */
+  #endif /* GADGETREBOOT2TRANSISTOR_12V */
 
   delayMicroseconds(40);
-  digitalWrite(VCC, LOW);    // Vcc Off
-  
+  #if GADGETREBOOT2TRANSISTOR_VCC
+    digitalWrite(VCC, LOW);     // Vcc Off - GadgetReboot circuit (two transistors), or direct
+  #else
+    digitalWrite(VCC, HIGH);    // Vcc Off - GadgetReboot circuit (one transistor)
+  #endif /* GADGETREBOOT2TRANSISTOR_VCC */  
   // Let user know we're done - RSB
 	digitalWrite(BUZZ, HIGH);
 	delay(50);
