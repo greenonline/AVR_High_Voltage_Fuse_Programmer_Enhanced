@@ -254,7 +254,8 @@ byte shiftOut (byte val1, byte val2) {
   for (int ii = 10; ii >= 0; ii--)  {
     digitalWrite(SDI, !!(dout & (1 << ii)));
     digitalWrite(SII, !!(iout & (1 << ii)));
-    inBits <<= 1;         inBits |= digitalRead(SDO);
+    inBits <<= 1;
+    inBits |= digitalRead(SDO);
     digitalWrite(SCI, HIGH);
     digitalWrite(SCI, LOW);
   }
